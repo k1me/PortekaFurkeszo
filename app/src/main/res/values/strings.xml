@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Portéka-Fürkésző</string>
+    <string name="account">Fiók</string>
+    <string name="home">Főoldal</string>
+    <string name="cart">Kosár</string>
+</resources>
