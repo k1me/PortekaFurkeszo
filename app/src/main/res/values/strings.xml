@@ -3,4 +3,7 @@
     <string name="account">Fiók</string>
     <string name="home">Főoldal</string>
     <string name="cart">Kosár</string>
+    <string name="email">Email</string>
+    <string name="pw">Jelszó</string>
+    <string name="login">Bejelentkezés</string>
 </resources>

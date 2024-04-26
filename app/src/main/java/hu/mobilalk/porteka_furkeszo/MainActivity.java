@@ -10,6 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import hu.mobilalk.porteka_furkeszo.databinding.ActivityMainBinding;
+import hu.mobilalk.porteka_furkeszo.fragments.AccountFragment;
+import hu.mobilalk.porteka_furkeszo.fragments.CartFragment;
+import hu.mobilalk.porteka_furkeszo.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -19,21 +22,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        replaceFragment(new HomeFragment());
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             switch (item.getItemId()) {
                 case R.id.home:
                     replaceFragment(new HomeFragment());
-                    Log.d("MainActivity", "Selected item: Home");
                     break;
                 case R.id.profile:
                     replaceFragment(new AccountFragment());
-                    Log.d("MainActivity", "Selected item: Profile");
                     break;
                 case R.id.cart:
                     replaceFragment(new CartFragment());
-                    Log.d("MainActivity", "Selected item: Cart");
                     break;
             }
             return true;

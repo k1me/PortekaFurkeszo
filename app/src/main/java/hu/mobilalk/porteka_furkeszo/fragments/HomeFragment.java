@@ -1,4 +1,4 @@
-package hu.mobilalk.porteka_furkeszo;
+package hu.mobilalk.porteka_furkeszo.fragments;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import hu.mobilalk.porteka_furkeszo.R;
 
 public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "arg1";

@@ -2,11 +2,11 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/app_theme</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#3F51B5</color>
+    <color name="colorPrimaryDark">@color/app_theme</color>
     <color name="colorAccent">#8BC34A</color>
 </resources>

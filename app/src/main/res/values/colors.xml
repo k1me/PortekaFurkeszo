@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#F234234F</color>
+    <color name="app_theme">#F21D8CE1</color>
 </resources>
