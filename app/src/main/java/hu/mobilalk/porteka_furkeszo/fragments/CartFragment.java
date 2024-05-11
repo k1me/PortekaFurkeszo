@@ -1,39 +1,33 @@
 package hu.mobilalk.porteka_furkeszo.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+import hu.mobilalk.porteka_furkeszo.MainActivity;
 import hu.mobilalk.porteka_furkeszo.R;
+import hu.mobilalk.porteka_furkeszo.adapters.CartAdapter;
+import hu.mobilalk.porteka_furkeszo.models.Product;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CartFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    RecyclerView recyclerView;
+    ArrayList<Product> cart;
+    CartAdapter adapter;
 
     public CartFragment() {
-        // Required empty public constructor
     }
-    public static CartFragment newInstance(String param1, String param2) {
+
+    public static CartFragment newInstance() {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,16 +35,36 @@ public class CartFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_cart, container, false);
+
+        recyclerView = rootView.findViewById(R.id.cartRecyclerView);
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(layoutManager);
+
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                cart = mainActivity.getShoppingCart();
+                adapter = new CartAdapter(getContext(), cart);
+                recyclerView.setAdapter(adapter);
+            }
+
+        } else {
+            Toast.makeText(getContext(), "Hopp-hopp, valami hiba történt:/", Toast.LENGTH_SHORT).show();
+        }
+        return rootView;
+    }
+
+    public void removeProduct() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            cart = mainActivity.getShoppingCart();
+        }
     }
 }

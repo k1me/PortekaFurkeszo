@@ -6,4 +6,17 @@
     <string name="email">Email</string>
     <string name="pw">Jelszó</string>
     <string name="login">Bejelentkezés</string>
+    <string name="sign_up">Regisztráció</string>
+    <string name="pwRe">Jelszó újra</string>
+    <string name="back">Vissza</string>
+    <string name="fill">fill</string>
+    <string name="ft">Ft</string>
+    <string name="search">Keresés</string>
+    <string name="surname">Vezetéknév:</string>
+    <string name="date">dátum</string>
+    <string name="firstName">Keresztnév</string>
+    <string name="address">Lakcím</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="exit">Kilépés</string>
 </resources>
