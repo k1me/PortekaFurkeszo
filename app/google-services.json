@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:833855187628:android:10fbaf0161b26145e0cd09",
+        "mobilesdk_app_id": "",
         "android_client_info": {
           "package_name": "hu.mobilalk.porteka_furkeszo"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC8vHVa4dM8L_Pl2VVWWtL7e2gsKAegkeQ"
+          "current_key": ""
         }
       ],
       "services": {

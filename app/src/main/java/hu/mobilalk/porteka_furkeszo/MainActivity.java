@@ -3,18 +3,23 @@ package hu.mobilalk.porteka_furkeszo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -122,31 +127,37 @@ public class MainActivity extends AppCompatActivity {
         String id = UUID.randomUUID().toString();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-            Date date = new Date();
-            int total = 0;
-            for (Product product : shoppingCart) {
-                total += Integer.parseInt(product.getPrice());
-            }
+        String uid = currentUser.getUid();
+        Date date = new Date();
+        int total = 0;
+        for (Product product : shoppingCart) {
+            total += Integer.parseInt(product.getPrice());
+        }
 
-            Cart cart = new Cart(id, uid, shoppingCart, date, total);
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("orders")
-                    .add(cart)
-                    .addOnSuccessListener(documentReference -> {
+        Cart cart = new Cart(id, uid, shoppingCart, date, total);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("orders")
+                .add(cart)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
                         shoppingCart.clear();
                         CartFragment.newInstance().removeProduct();
                         Toast.makeText(
                                 MainActivity.this,
                                 "Sikeres vásárlás!",
                                 Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(
-                            MainActivity.this,
-                            "Valami nem sikerült:/!",
-                            Toast.LENGTH_SHORT).show());
-        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Valami nem sikerült:/!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 }
