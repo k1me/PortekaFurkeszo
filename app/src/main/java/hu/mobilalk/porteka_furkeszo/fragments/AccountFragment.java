@@ -2,6 +2,7 @@ package hu.mobilalk.porteka_furkeszo.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,7 +29,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -34,6 +39,9 @@ import java.util.Map;
 
 import hu.mobilalk.porteka_furkeszo.R;
 import hu.mobilalk.porteka_furkeszo.activities.LoginActivity;
+import hu.mobilalk.porteka_furkeszo.adapters.OrderAdapter;
+import hu.mobilalk.porteka_furkeszo.adapters.ProductAdapter;
+import hu.mobilalk.porteka_furkeszo.models.Cart;
 
 public class AccountFragment extends Fragment {
     TextView nameTV;
@@ -47,6 +55,10 @@ public class AccountFragment extends Fragment {
     Query userQuery;
     TextView deleteAccountTV;
     FloatingActionButton signOutFab;
+    RecyclerView recyclerView;
+    OrderAdapter adapter;
+    FirebaseFirestore db;
+    ArrayList<Cart> orders;
 
     public AccountFragment() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -77,26 +89,39 @@ public class AccountFragment extends Fragment {
         saveBtn = rootView.findViewById(R.id.saveBtn);
         signOutFab = rootView.findViewById(R.id.signOutFab);
         deleteAccountTV = rootView.findViewById(R.id.deleteAccountTV);
+        recyclerView = rootView.findViewById(R.id.accountRecyclerView);
 
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(layoutManager);
+
+            db = FirebaseFirestore.getInstance();
+            orders = new ArrayList<>();
+            adapter = new OrderAdapter(getContext(), orders);
+            recyclerView.setAdapter(adapter);
+
+            EventChangeListener();
+        }
         userQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String surname = document.getString("lastName");
-                        surnameET.setHint(surname);
+                        surnameET.setHint(surname.isEmpty() ? "Vezetéknév" : surname);
 
                         String firstname = document.getString("firstName");
-                        firstnameET.setHint(firstname);
+                        firstnameET.setHint(firstname.isEmpty() ? "Keresztnév" : firstname);
 
                         String address = document.getString("address");
-                        addressET.setHint(address);
+                        addressET.setHint(address.isEmpty() ? "Lakcím" : address);
 
                         String email = document.getString("email");
                         emailTV.setText(email);
 
                         String name = document.getString("firstName");
-                        nameTV.setText(name);
+                        nameTV.setText(name.isEmpty() ? "user" : name);
 
                         Date date = document.getDate("registeredOn");
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -129,11 +154,11 @@ public class AccountFragment extends Fragment {
                             if (!surname.isEmpty()) {
                                 userData.put("lastName", surname);
                             }
-                            if (!surname.isEmpty()) {
+                            if (!firstname.isEmpty()) {
                                 userData.put("firstName", firstname);
 
                             }
-                            if (!surname.isEmpty()) {
+                            if (!address.isEmpty()) {
                                 userData.put("address", address);
                             }
 
@@ -143,9 +168,9 @@ public class AccountFragment extends Fragment {
                                         public void onSuccess(Void aVoid) {
                                             Toast.makeText(
                                                     rootView.getContext(),
-                                                    "Sikeres adatrögzítés:) "
-                                                            + task.getException().getMessage(),
-                                                    Toast.LENGTH_SHORT).show();
+                                                    "Sikeres adatrögzítés:) ",
+                                                    Toast.LENGTH_SHORT)
+                                                    .show();
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
@@ -153,18 +178,18 @@ public class AccountFragment extends Fragment {
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(
                                                     rootView.getContext(),
-                                                    "Valami hiba történt az adatok eltárolásakor:( "
-                                                            + task.getException().getMessage(),
-                                                    Toast.LENGTH_SHORT).show();
+                                                    "Valami hiba történt az adatok eltárolásakor:( ",
+                                                    Toast.LENGTH_SHORT)
+                                                    .show();
                                         }
                                     });
                         }
                     } else {
                         Toast.makeText(
                                 rootView.getContext(),
-                                "Valami hiba történt az adatok eltárolásakor:( "
-                                        + task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                                "Valami hiba történt az adatok eltárolásakor:( ",
+                                Toast.LENGTH_SHORT)
+                                .show();
                     }
                 }
             });
@@ -215,6 +240,26 @@ public class AccountFragment extends Fragment {
         FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
 
         return rootView;
+    }
+
+    private void EventChangeListener() {
+        db.collection("orders").whereEqualTo("uid", userID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Cart cartItem = document.toObject(Cart.class);
+                            orders.add(cartItem);
+                            Log.i("f8o4sh4of8hsof", cartItem.toString());
+                        }
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(),
+                                "Hopp-hopp, valami hiba történt:/",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
     }
 
 }

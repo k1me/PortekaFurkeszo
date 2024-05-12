@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -95,31 +97,39 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentFragment instanceof ProductDetailFragment) {
             Product product = ((ProductDetailFragment) currentFragment).getProductFromView();
-            String productId = product.getId();
 
             shoppingCart.add(product);
+            Toast.makeText(
+                    MainActivity.this,
+                    "Termék hozzáadva a kosárhoz.",
+                    Toast.LENGTH_SHORT)
+                    .show();
         }
     }
-
     public ArrayList<Product> getShoppingCart() {
         return shoppingCart;
     }
 
     public void onClickRemove(View view) {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof ProductDetailFragment) {
-            Product product = ((ProductDetailFragment) currentFragment).getProductFromView();
-            String productId = product.getId();
+        if (view.getParent() instanceof ViewGroup) {
+            ViewGroup parentView = (ViewGroup) view.getParent();
+            TextView productNameTV = parentView.findViewById(R.id.itemNameTextView);
+            String productName = productNameTV.getText().toString();
+
             CartFragment cartFragment = new CartFragment();
-            Product product2;
             for (int i = 0; i < shoppingCart.size(); i++) {
-                product2 = shoppingCart.get(i);
-                if (product2.getId().equals(productId)) {
+                Product product = shoppingCart.get(i);
+                if (product.getName().equals(productName)) {
                     shoppingCart.remove(i);
                     cartFragment.removeProduct();
                     break;
                 }
             }
+            Toast.makeText(
+                    MainActivity.this,
+                    "Termék eltávolítva, frissítsd az oldalt kérlek.:)",
+                    Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 

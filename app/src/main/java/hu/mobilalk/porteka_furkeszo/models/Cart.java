@@ -10,6 +10,8 @@ public class Cart {
     private Date date;
     private int total;
 
+    public Cart() {}
+
     public String getId() {
         return id;
     }
@@ -56,5 +58,16 @@ public class Cart {
         this.products = products;
         this.date = date;
         this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id='" + id + '\'' +
+                ", uid='" + uid + '\'' +
+                ", products=" + products +
+                ", date=" + date +
+                ", total=" + total +
+                '}';
     }
 }
